@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Song list</title>
+  </head>
+  <body>
+    {% if songs %}
+    {% for song in songs %}
+     <p> {{ song.title }} by {{ song.artist }}</p>
+    {% endfor %}
+    {% else %}
+    <p> There are no songs! Add one (later)?></p>
+    {% endif %}
+  </body>
+</html>

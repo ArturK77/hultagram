@@ -15,7 +15,7 @@ with open("favorites.csv", "r") as file:
     # Iterate over CSV file, counting favorites
     for row in reader:
         song = row["song"]
-        counts[favorite] += 1
+        counts[song] += 1
 
 # Print counts
 for favorite, count in counts.most_common():
