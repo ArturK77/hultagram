@@ -1,98 +1,40 @@
-<!-- templates/base.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tracks</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <style>
-        .favorite { color: red; }
-        .song-item { padding: 10px; margin-bottom: 5px; border-bottom: 1px solid #eee; }
-    </style>
-    <script>
-        function toggleFavorite(icon, itemId) {
-            let isLiked = icon.classList.contains("bi-heart-fill");
+<!-- templates/index.html -->
+{% extends 'base.html' %}
 
-            // Toggle heart icon
-            icon.classList.toggle("bi-heart");
-            icon.classList.toggle("bi-heart-fill");
+{% block content %}
 
-            // Send data to Flask backend
-            fetch('/toggle_favorite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ item_id: itemId, liked: !isLiked })
-            }).then(response => response.json())
-              .then(data => console.log("Server response:", data))
-              .catch(error => console.error("Error:", error));
-        }
-        function deleteSong(songId) {
-            if (confirm("Are you sure you want to delete this song?")) {
-                fetch(`/delete/${songId}`, { method: "POST" })
-                    .then(response => {
-                        if (response.redirected) {
-                            window.location.href = response.url; // Refresh page after deletion
-                        }
-                    })
-                    .catch(error => console.error("Error deleting song:", error));
-            }
-        }
-    </script>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container md-auto">
-            <a class="navbar-brand" href="{{ url_for('index') }}">My Tracks</a>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('add_song') }}">Add Track</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container auto">
-        <div class="row mt-4">
-            <div class="col-md-12">
-                
-                <!-- Example of how a song should display (remove this in completed code) -->
-                {% if songs %}
-                {% for song in songs %}
-                <div class="song-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="{% if song.favorite %}completed{% endif %}">{{ song.title }}</h5>
-                            <p class="text-muted">{{ song.artist }}</p>
-                        </div>
-                        <div>
-                            <!-- Favorite Toggle -->
-                            <i class="bi {% if song.favorite %}bi-heart-fill{% else %}bi-heart{% endif %}" 
-                               style="font-size: 1.5rem; cursor: pointer; margin-right: 10px;"
-                               onclick="toggleFavorite(this, {{ song.id }})">
-                            </i>
-                
-                            <!-- Delete Button -->
-                            <i class="bi bi-trash text-danger" 
-                               style="font-size: 1.5rem; cursor: pointer;"
-                               onclick="deleteSong({{ song.id }})">
-                            </i>
-                        </div>
-                    </div>
+<div class="row mt-4">
+    <div class="col-md-12">
+        
+        <!-- Example of how a song should display (remove this in completed code) -->
+        {% if songs %}
+        {% for song in songs %}
+        <div class="song-item">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="{% if song.favorite %}completed{% endif %}">{{ song.title }}</h5>
+                    <p class="text-muted">{{ song.artist }}</p>
                 </div>
-                {% endfor %}
-                {% else %}
-                <p>No songs found. Add your first song <a href="{{ url_for('add_song') }}">here</a></p>
-                {% endif %}
-                
+                <div>
+                    <!-- Favorite Toggle -->
+                    <i class="bi {% if song.favorite %}bi-heart-fill{% else %}bi-heart{% endif %}" 
+                       style="font-size: 1.5rem; cursor: pointer; margin-right: 10px;"
+                       onclick="toggleFavorite(this, {{ song.id }})">
+                    </i>
+        
+                    <!-- Delete Button -->
+                    <i class="bi bi-trash text-danger" 
+                       style="font-size: 1.5rem; cursor: pointer;"
+                       onclick="deleteSong({{ song.id }})">
+                    </i>
+                </div>
             </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <p>No songs found. Add your first song <a href="{{ url_for('add_song') }}">here</a></p>
+        {% endif %}
+        
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
